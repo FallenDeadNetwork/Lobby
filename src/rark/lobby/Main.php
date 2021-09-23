@@ -15,10 +15,10 @@ class Main extends PluginBase{
 				$this->getDataFolder().'config.conf',
 				Config::YAML,
 				[
-					'lobby_world.folder_name' => 'world',
-					'allow_pvp' => false,
-					'gamemode' => Player::ADVENTURE,
-					'spawn' => [
+					Lobby::CONF_LOBBY_WORLD_NAME => 'world',
+					Lobby::CONF_ALLOW_PVP => false,
+					Lobby::CONF_GAMEMODE => Player::ADVENTURE,
+					Lobby::CONF_SPAWN => [
 						0,
 						70,
 						0
