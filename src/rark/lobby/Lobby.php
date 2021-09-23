@@ -28,10 +28,10 @@ class Lobby{
 
 	public function __construct(Config $conf){
 		if(self::$instance !== null) throw new \RuntimeException('another instance is already created');
-		self::$level = $this->checkLevel($conf->get(self::CONF_LOBBY_WORLD_NAME, null));
+		self::$level = $this->checkLevel((string) $conf->get(self::CONF_LOBBY_WORLD_NAME, null));
 		self::$allow_pvp = $this->checkAllowPvP($conf->get(self::CONF_LOBBY_WORLD_NAME, false));
-		self::$gamemode = $this->checkGamemode($conf->get(self::CONF_GAMEMODE, null));
-		self::$spawn = $this->checkSpawn($conf->get(self::CONF_SPAWN));
+		self::$gamemode = $this->checkGamemode((int) $conf->get(self::CONF_GAMEMODE, null));
+		self::$spawn = $this->checkSpawn((array) $conf->get(self::CONF_SPAWN));
 		self::$instance = $this;
 	}
 
@@ -48,7 +48,6 @@ class Lobby{
 		return $boolval === null? false: $boolval;
 	}
 
-
 	protected function checkGamemode(?int $gamemode):int{
 		if($gamemode === null) throw new KeyNotFoundException(self::CONF_GAMEMODE);
 		if($gamemode < 0 or $gamemode > 3) throw new \ErrorException($gamemode.' is not a valid game mode');
@@ -60,5 +59,25 @@ class Lobby{
 		if(count($spawn) !== 3) throw new \ErrorException('');
 		$spawn = array_filter(array_values($spawn));
 		return new Vector3(floor((float) $spawn[0]), floor((float) $spawn[1]), floor((float) $spawn[2]));
+	}
+
+	public static function getInstance():?self{
+		return self::$instance;
+	}
+
+	public function getLevel():Level{
+		return $this->level;
+	}
+
+	public function isAllowedPvP():bool{
+		return $this->allow_pvp;
+	}
+
+	public function getGamemode():int{
+		return $this->gamemode;
+	}
+
+	public function getSpawn():Vector3{
+		return $this->spawn;
 	}
 }
