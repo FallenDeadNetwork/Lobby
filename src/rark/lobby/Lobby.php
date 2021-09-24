@@ -15,13 +15,15 @@ class Lobby{
 	const CONF_SPAWN = 'spawn';
 	const CONF_EFFECTS = 'effects';
 	const CONF_CANCEL_EXHAUST = 'cancel_exhaust';
+	const CONF_CANCEL_KILL = 'cancel_kill';
 
 	protected static ?self $instance = null;
 	protected Level $level;
 	protected bool $allow_pvp;
 	protected int $gamemode;
 	protected Vector3 $spawn;
-	protected bool $exhaust;
+	protected bool $cancel_exhaust;
+	protected bool $cancel_kill;
 
 	public function __construct(Config $conf){
 		if(self::$instance !== null) throw new \RuntimeException('another instance is already created');
@@ -29,7 +31,8 @@ class Lobby{
 		$this->allow_pvp = $this->checkBool($conf->get(self::CONF_LOBBY_WORLD_NAME, false));
 		$this->gamemode = $this->checkGamemode($conf->get(self::CONF_GAMEMODE, null));
 		$this->spawn = $this->checkSpawn((array) $conf->get(self::CONF_SPAWN, []));
-		$this->exhaust = $this->checkBool($conf->get(self::CONF_CANCEL_EXHAUST, true));
+		$this->cancel_exhaust = $this->checkBool($conf->get(self::CONF_CANCEL_EXHAUST, true));
+		$this->cancel_kill = $this->checkBool($conf->get(self::CONF_CANCEL_KILL, true));
 		self::$instance = $this;
 	}
 
@@ -86,5 +89,9 @@ class Lobby{
 
 	public function isCancelledExhaust():bool{
 		return $this->exhaust;
+	}
+
+	public function isCancelledKillCommand():bool{
+		return $this->kill_command;
 	}
 }

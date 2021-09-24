@@ -9,6 +9,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\server\CommandEvent;
 use pocketmine\level\Position;
 use pocketmine\Player;
 
@@ -50,5 +51,14 @@ class EventListener implements Listener{
 	public function onDeath(PlayerDeathEvent $ev):void{
 		if($ev->getPlayer()->getLevel()?->getName() !== $this->lobby->getLevel()->getName()) return;
 		$ev->setDrops([]);
+	}
+
+	public function onCommand(CommandEvent $ev):void{
+		$sender = $ev->getSender();
+		
+		if(!$sender instanceof Player) return;
+		if($ev->getCommand() === 'kill' and Lobby::isLobby($sender->getLevel())){
+			if($this->lobby->isCancelledKillCommand()) $ev->setCancelled();
+		}
 	}
 }
