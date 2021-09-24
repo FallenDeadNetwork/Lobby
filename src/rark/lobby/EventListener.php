@@ -6,6 +6,7 @@ namespace rark\lobby;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\level\Position;
@@ -43,5 +44,10 @@ class EventListener implements Listener{
 			if($ev->getDamager() instanceof Player and $this->lobby->isAllowedPvP()) return;
 			$ev->setCancelled();
 		}
+	}
+
+	public function onDeath(PlayerDeathEvent $ev):void{
+		if($ev->getPlayer()->getLevel()?->getName() !== $this->lobby->getLevel()->getName()) return;
+		$ev->setDrops([]);
 	}
 }
