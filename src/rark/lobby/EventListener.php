@@ -42,6 +42,14 @@ class EventListener implements Listener{
 
 		if(!$player instanceof Player) return;
 		if(!Lobby::isLobby($player->getLevel())) return;
+		if($player->getHealth()-$ev->getFinalDamage() < 1){
+			$ev->setCancelled();
+			$player->setHealth(20.0);
+			$spawn = $this->lobby->getSpawn();
+			$pos = new Position($spawn->x, $spawn->y, $spawn->z, $this->lobby->getLevel());
+			$player->teleport($pos);
+			return;
+		}
 		if($ev instanceof EntityDamageByEntityEvent){
 			if($ev->getDamager() instanceof Player and $this->lobby->isAllowedPvP()) return;
 			$ev->setCancelled();
