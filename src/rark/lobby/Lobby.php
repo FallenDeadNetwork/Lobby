@@ -88,10 +88,10 @@ class Lobby{
 	}
 
 	public function isCancelledExhaust():bool{
-		return $this->exhaust;
+		return $this->cancel_exhaust;
 	}
 
 	public function isCancelledKillCommand():bool{
-		return $this->kill_command;
+		return $this->cancel_kill;
 	}
 }
