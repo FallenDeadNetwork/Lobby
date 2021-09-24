@@ -31,7 +31,7 @@ class Lobby{
 		if(self::$instance !== null) throw new \RuntimeException('another instance is already created');
 		$this->level = $this->checkLevel((string) $conf->get(self::CONF_LOBBY_WORLD_NAME, null));
 		$this->allow_pvp = $this->checkBool($conf->get(self::CONF_LOBBY_WORLD_NAME, false));
-		$this->gamemode = $this->checkGamemode((int) $conf->get(self::CONF_GAMEMODE, null));
+		$this->gamemode = $this->checkGamemode($conf->get(self::CONF_GAMEMODE, null));
 		$this->spawn = $this->checkSpawn((array) $conf->get(self::CONF_SPAWN, []));
 		$this->effects = $this->checkEffects((array) $conf->get(self::CONF_EFFECTS, []));
 		$this->exhaust = $this->checkBool($conf->get(self::CONF_EXHAUST, true));
@@ -51,9 +51,9 @@ class Lobby{
 		return $boolval === null? false: $boolval;
 	}
 
-	protected function checkGamemode(?int $gamemode):int{
+	protected function checkGamemode(mixed $gamemode):int{
 		if($gamemode === null) throw new KeyNotFoundException(self::CONF_GAMEMODE);
-		if($gamemode < 0 or $gamemode > 3) throw new \ErrorException($gamemode.' is not a valid game mode');
+		if((int) $gamemode < 0 or (int) $gamemode > 3) throw new \ErrorException($gamemode.' is not a valid game mode');
 		return $gamemode;
 	}
 
@@ -70,8 +70,8 @@ class Lobby{
 		$effects_instances = [];
 
 		foreach($effects as $value){
-			if($value < Effect::SPEED or $value > Effect::CONDUIT_POWER) throw new \ErrorException($value.' is not a valid effect id');
-			$effects_instances[] = new EffectInstance(Effect::getEffect($value), 2, 1, false);
+			if((int) $value < Effect::SPEED or (int) $value > Effect::CONDUIT_POWER) throw new \ErrorException($value.' is not a valid effect id');
+			$effects_instances[] = new EffectInstance(Effect::getEffect((int) $value), 2, 1, false);
 		}
 		return \SplFixedArray::fromArray($effects_instances);
 	}
