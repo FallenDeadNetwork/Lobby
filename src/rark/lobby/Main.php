@@ -26,35 +26,10 @@ class Main extends PluginBase{
 						70,
 						0
 					],
-					Lobby::CONF_EFFECTS => [
-						Effect::SPEED
-					],
-					Lobby::CONF_EXHAUST => false
+					Lobby::CONF_CANCEL_EXHAUST => true
 				]
 			)
 		);
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($lobby), $this);
-		$this->getScheduler()->scheduleRepeatingTask(
-			new ClosureTask(
-				function() use($lobby):void{
-					if($lobby === null){
-						$lobby = Lobby::getInstance();
-
-						if($lobby === null) return;
-					}
-
-					/** @var Player $player */
-					foreach(Server::getInstance()->getOnlinePlayers() as $player){
-						if($player->getLevel()?->getName() !== $this->lobby->getLevel()->getName()) continue;
-
-						/** @var \pocketmine\entity\EffectInstance $effect*/
-						foreach($lobby->getEffects() as $effect){
-							$player->addEffect($effect);
-						}
-					}
-				}
-			),
-			20
-		);
 	}
 }

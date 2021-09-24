@@ -16,15 +16,13 @@ class Lobby{
 	const CONF_GAMEMODE = 'gamemode';
 	const CONF_SPAWN = 'spawn';
 	const CONF_EFFECTS = 'effects';
-	const CONF_EXHAUST = 'exhaust';
+	const CONF_CANCEL_EXHAUST = 'cancel_exhaust';
 
 	protected static ?self $instance = null;
 	protected Level $level;
 	protected bool $allow_pvp;
 	protected int $gamemode;
 	protected Vector3 $spawn;
-	/** @var EffectInstance[] */
-	protected \SplFixedArray $effects;
 	protected bool $exhaust;
 
 	public function __construct(Config $conf){
@@ -33,9 +31,8 @@ class Lobby{
 		$this->allow_pvp = $this->checkBool($conf->get(self::CONF_LOBBY_WORLD_NAME, false));
 		$this->gamemode = $this->checkGamemode($conf->get(self::CONF_GAMEMODE, null));
 		$this->spawn = $this->checkSpawn((array) $conf->get(self::CONF_SPAWN, []));
-		$this->effects = $this->checkEffects((array) $conf->get(self::CONF_EFFECTS, []));
-		$this->exhaust = $this->checkBool($conf->get(self::CONF_EXHAUST, true));
-		$this->instance = $this;
+		$this->exhaust = $this->checkBool($conf->get(self::CONF_CANCEL_EXHAUST, true));
+		self::$instance = $this;
 	}
 
 	protected function checkLevel(mixed $level_name):Level{
@@ -64,18 +61,6 @@ class Lobby{
 		return new Vector3(floor((float) $spawn[0]), floor((float) $spawn[1]), floor((float) $spawn[2]));
 	}
 
-	/** @return EffectInstance */
-	protected function checkEffects(array $effects):\SplFixedArray{
-		if(count($effects) === 0) throw new KeyNotFoundException(self::CONF_EFFECTS);
-		$effects_instances = [];
-
-		foreach($effects as $value){
-			if((int) $value < Effect::SPEED or (int) $value > Effect::CONDUIT_POWER) throw new \ErrorException($value.' is not a valid effect id');
-			$effects_instances[] = new EffectInstance(Effect::getEffect((int) $value), 2, 1, false);
-		}
-		return \SplFixedArray::fromArray($effects_instances);
-	}
-
 	public static function getInstance():?self{
 		return self::$instance;
 	}
@@ -94,10 +79,6 @@ class Lobby{
 
 	public function getSpawn():Vector3{
 		return $this->spawn;
-	}
-
-	public function getEffects():\SplFixedArray{
-		return $this->effects;
 	}
 
 	public function isCancelledExhaust():bool{
