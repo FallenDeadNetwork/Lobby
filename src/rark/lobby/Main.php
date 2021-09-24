@@ -23,7 +23,8 @@ class Main extends PluginBase{
 						70,
 						0
 					],
-					Lobby::CONF_CANCEL_EXHAUST => true
+					Lobby::CONF_CANCEL_EXHAUST => true,
+					Lobby::CONF_CANCEL_KILL => true
 				]
 			)
 		);
