@@ -29,7 +29,7 @@ class Lobby{
 
 	public function __construct(Config $conf){
 		if(self::$instance !== null) throw new \RuntimeException('another instance is already created');
-		$this->level = $this->checkLevel((string) $conf->get(self::CONF_LOBBY_WORLD_NAME, null));
+		$this->level = $this->checkLevel($conf->get(self::CONF_LOBBY_WORLD_NAME, null));
 		$this->allow_pvp = $this->checkBool($conf->get(self::CONF_LOBBY_WORLD_NAME, false));
 		$this->gamemode = $this->checkGamemode($conf->get(self::CONF_GAMEMODE, null));
 		$this->spawn = $this->checkSpawn((array) $conf->get(self::CONF_SPAWN, []));
@@ -38,9 +38,9 @@ class Lobby{
 		$this->instance = $this;
 	}
 
-	protected function checkLevel(?string $level_name):Level{
+	protected function checkLevel(mixed $level_name):Level{
 		if($level_name === null) throw new KeyNotFoundException(self::CONF_LOBBY_WORLD_NAME);
-		$level = Server::getInstance()->getLevelByName($level_name);
+		$level = Server::getInstance()->getLevelByName((string) $level_name);
 
 		if($level === null) throw new \ErrorException('world name "'.$level_name.'" was not found');
 		return $level;
@@ -57,7 +57,7 @@ class Lobby{
 		return $gamemode;
 	}
 
-	protected function checkSpawn(?array $spawn):Vector3{
+	protected function checkSpawn(array $spawn):Vector3{
 		if(count($spawn) === 0) throw new KeyNotFoundException(self::CONF_SPAWN);
 		if(count($spawn) !== 3) throw new \ErrorException('please enter only 3 numbers in the key '.self::CONF_SPAWN);
 		$spawn = array_filter(array_values($spawn));
@@ -65,7 +65,7 @@ class Lobby{
 	}
 
 	/** @return EffectInstance */
-	protected function checkEffects(?array $effects):\SplFixedArray{
+	protected function checkEffects(array $effects):\SplFixedArray{
 		if(count($effects) === 0) throw new KeyNotFoundException(self::CONF_EFFECTS);
 		$effects_instances = [];
 
