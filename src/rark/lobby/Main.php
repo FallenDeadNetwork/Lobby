@@ -33,8 +33,7 @@ class Main extends PluginBase{
 				]
 			)
 		);
-		$this->getServer()->getPluginManager()->registerEvents(
-			new EventListener($lobby), $this);
+		$this->getServer()->getPluginManager()->registerEvents(new EventListener($lobby), $this);
 		$this->getScheduler()->scheduleRepeatingTask(
 			new ClosureTask(
 				function() use($lobby):void{
@@ -43,8 +42,12 @@ class Main extends PluginBase{
 
 						if($lobby === null) return;
 					}
+
+					/** @var Player $player */
 					foreach(Server::getInstance()->getOnlinePlayers() as $player){
 						if($player->getLevel()?->getName() !== $this->lobby->getLevel()->getName()) continue;
+
+						/** @var \pocketmine\entity\EffectInstance $effect*/
 						foreach($lobby->getEffects() as $effect){
 							$player->addEffect($effect);
 						}
