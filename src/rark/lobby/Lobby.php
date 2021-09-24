@@ -3,8 +3,6 @@ declare(strict_types = 1);
 
 namespace rark\lobby;
 
-use pocketmine\entity\Effect;
-use pocketmine\entity\EffectInstance;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\Server;
@@ -63,6 +61,11 @@ class Lobby{
 
 	public static function getInstance():?self{
 		return self::$instance;
+	}
+
+	public static function isLobby(?Level $level):bool{
+		if($level === null or self::$instance === null) return false;
+		return $level->getId() === self::$instance->getLevel()->getId();
 	}
 
 	public function getLevel():Level{

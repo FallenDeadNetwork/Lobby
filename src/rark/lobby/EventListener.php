@@ -31,7 +31,7 @@ class EventListener implements Listener{
 	}
 
 	public function onExhaust(PlayerExhaustEvent $ev):void{
-		if($ev->getPlayer()->getLevelNonNull()->getName() !== $this->lobby->getLevel()->getName()) return;
+		if(!Lobby::isLobby($ev->getPlayer()->getLevel())) return;
 		if(!$this->lobby->isCancelledExhaust()) return;
 		$ev->setCancelled();
 	}
@@ -40,6 +40,7 @@ class EventListener implements Listener{
 		$player = $ev->getEntity();
 
 		if(!$player instanceof Player) return;
+		if(!Lobby::isLobby($player->getLevel())) return;
 		if($ev instanceof EntityDamageByEntityEvent){
 			if($ev->getDamager() instanceof Player and $this->lobby->isAllowedPvP()) return;
 			$ev->setCancelled();

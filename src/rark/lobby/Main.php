@@ -3,11 +3,8 @@ declare(strict_types = 1);
 
 namespace rark\lobby;
 
-use pocketmine\entity\Effect;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\scheduler\ClosureTask;
-use pocketmine\Server;
 use pocketmine\utils\Config;
 
 class Main extends PluginBase{
