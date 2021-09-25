@@ -16,6 +16,7 @@ class Lobby{
 	const CONF_EFFECTS = 'effects';
 	const CONF_CANCEL_EXHAUST = 'cancel_exhaust';
 	const CONF_CANCEL_KILL = 'cancel_kill';
+	const CONF_CANCEL_DROP = 'cancel_drop';
 
 	protected static ?self $instance = null;
 	protected Level $level;
@@ -24,6 +25,7 @@ class Lobby{
 	protected Vector3 $spawn;
 	protected bool $cancel_exhaust;
 	protected bool $cancel_kill;
+	protected bool $cancel_drop;
 
 	public function __construct(Config $conf){
 		if(self::$instance !== null) throw new \RuntimeException('another instance is already created');
@@ -33,6 +35,7 @@ class Lobby{
 		$this->spawn = $this->checkSpawn((array) $conf->get(self::CONF_SPAWN, []));
 		$this->cancel_exhaust = $this->checkBool($conf->get(self::CONF_CANCEL_EXHAUST, true));
 		$this->cancel_kill = $this->checkBool($conf->get(self::CONF_CANCEL_KILL, true));
+		$this->cancel_drop = $this->checkBool($conf->get(self::CONF_CANCEL_DROP, true));
 		self::$instance = $this;
 	}
 
@@ -93,5 +96,9 @@ class Lobby{
 
 	public function isCancelledKillCommand():bool{
 		return $this->cancel_kill;
+	}
+
+	public function isCancelledDorpItem():bool{
+		return $this->cancel_dorp;
 	}
 }
