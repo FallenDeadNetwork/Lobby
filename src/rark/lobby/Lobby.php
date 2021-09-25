@@ -99,6 +99,6 @@ class Lobby{
 	}
 
 	public function isCancelledDorpItem():bool{
-		return $this->cancel_dorp;
+		return $this->cancel_drop;
 	}
 }
