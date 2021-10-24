@@ -11,8 +11,9 @@ use pocketmine\event\player\PlayerDropItemEvent;
 use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\server\CommandEvent;
-use pocketmine\level\Position;
-use pocketmine\Player;
+use pocketmine\player\GameMode;
+use pocketmine\world\Position;
+use pocketmine\player\Player;
 
 class EventListener implements Listener{
 
@@ -28,23 +29,22 @@ class EventListener implements Listener{
 		$pos = new Position($spawn->x, $spawn->y, $spawn->z, $this->lobby->getLevel());
 		$player->teleport($pos);
 		$player->setSpawn($pos);
-
-		if(!$player->isOp()) $player->setGamemode($this->lobby->getGamemode());
+		$player->setGamemode(GameMode::ADVENTURE());
 	}
 
 	public function onExhaust(PlayerExhaustEvent $ev):void{
-		if(!Lobby::isLobby($ev->getPlayer()->getLevel())) return;
+		if(!Lobby::isLobby($ev->getPlayer()->getWorld())) return;
 		if(!$this->lobby->isCancelledExhaust()) return;
-		$ev->setCancelled();
+		$ev->cancel();
 	}
 
 	public function onDamage(EntityDamageEvent $ev):void{
 		$player = $ev->getEntity();
 
 		if(!$player instanceof Player) return;
-		if(!Lobby::isLobby($player->getLevel())) return;
+		if(!Lobby::isLobby($player->getWorld())) return;
 		if($player->getHealth()-$ev->getFinalDamage() < 1){
-			$ev->setCancelled();
+			$ev->cancel();
 			$player->setHealth(20.0);
 			$spawn = $this->lobby->getSpawn();
 			$pos = new Position($spawn->x, $spawn->y, $spawn->z, $this->lobby->getLevel());
@@ -53,12 +53,12 @@ class EventListener implements Listener{
 		}
 		if($ev instanceof EntityDamageByEntityEvent){
 			if($ev->getDamager() instanceof Player and $this->lobby->isAllowedPvP()) return;
-			$ev->setCancelled();
+			$ev->cancel();
 		}
 	}
 
 	public function onDeath(PlayerDeathEvent $ev):void{
-		if($ev->getPlayer()->getLevel()?->getName() !== $this->lobby->getLevel()->getName()) return;
+		if(!Lobby::isLobby($ev->getPlayer()->getWorld())) return;
 		$ev->setDrops([]);
 	}
 
@@ -66,13 +66,13 @@ class EventListener implements Listener{
 		$sender = $ev->getSender();
 		
 		if(!$sender instanceof Player) return;
-		if($ev->getCommand() === 'kill' and Lobby::isLobby($sender->getLevel())){
-			if($this->lobby->isCancelledKillCommand()) $ev->setCancelled();
+		if($ev->getCommand() === 'kill' and Lobby::isLobby($sender->getWorld())){
+			if($this->lobby->isCancelledKillCommand()) $ev->cancel();
 		}
 	}
 
 	public function onItemDrop(PlayerDropItemEvent $ev):void{
-		if(!Lobby::isLobby($ev->getPlayer()->getLevel())) return;
-		if($this->lobby->isCancelledDorpItem()) $ev->setCancelled();
+		if(!Lobby::isLobby($ev->getPlayer()->getWorld())) return;
+		if($this->lobby->isCancelledDorpItem()) $ev->cancel();
 	}
 }
