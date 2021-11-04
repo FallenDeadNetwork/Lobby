@@ -11,7 +11,7 @@ class Main extends PluginBase{
 	protected function onEnable():void{
 		$lobby = new Lobby(
 			new Config(
-				$this->getDataFolder().'config.conf',
+				$this->getDataFolder().'config.yml',
 				Config::YAML,
 				[
 					Lobby::CONF_LOBBY_WORLD_NAME => 'world',
