@@ -11,12 +11,9 @@ use pocketmine\event\player\PlayerDropItemEvent;
 use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\server\CommandEvent;
-use pocketmine\player\GameMode;
-use pocketmine\world\Position;
 use pocketmine\player\Player;
 
 class EventListener implements Listener{
-
 	protected Lobby $lobby;
 
 	public function __construct(Lobby $lobby){
@@ -25,11 +22,7 @@ class EventListener implements Listener{
 
 	public function onJoin(PlayerJoinEvent $ev):void{
 		$player = $ev->getPlayer();
-		$spawn = $this->lobby->getSpawn();
-		$pos = new Position($spawn->x, $spawn->y, $spawn->z, $this->lobby->getLevel());
-		$player->teleport($pos);
-		$player->setSpawn($pos);
-		$player->setGamemode(GameMode::ADVENTURE());
+		$this->lobby->join($player);
 	}
 
 	public function onExhaust(PlayerExhaustEvent $ev):void{
@@ -43,12 +36,11 @@ class EventListener implements Listener{
 
 		if(!$player instanceof Player) return;
 		if(!Lobby::isLobby($player->getWorld())) return;
+		$ev->cancel();
+		
 		if($player->getHealth()-$ev->getFinalDamage() < 1){
-			$ev->cancel();
 			$player->setHealth(20.0);
-			$spawn = $this->lobby->getSpawn();
-			$pos = new Position($spawn->x, $spawn->y, $spawn->z, $this->lobby->getLevel());
-			$player->teleport($pos);
+			$this->lobby->join($player);
 			return;
 		}
 		if($ev instanceof EntityDamageByEntityEvent){

@@ -3,9 +3,15 @@ declare(strict_types = 1);
 
 namespace rark\lobby;
 
+use pocketmine\entity\effect\EffectInstance;
+use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\math\Vector3;
+use pocketmine\player\GameMode;
+use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\Config;
+use pocketmine\utils\Limits;
+use pocketmine\world\Position;
 use pocketmine\world\World;
 
 class Lobby{
@@ -63,6 +69,15 @@ class Lobby{
 	public static function isLobby(?World $level):bool{
 		if($level === null or self::$instance === null) return false;
 		return $level->getId() === self::$instance->getLevel()->getId();
+	}
+
+	public function join(Player $player):void{
+		$spawn = $this->getSpawn();
+		$pos = new Position($spawn->x, $spawn->y, $spawn->z, $this->lobby->getLevel());
+		$player->teleport($pos);
+		$player->setSpawn($pos);
+		$player->setGamemode(GameMode::ADVENTURE());
+		$player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), Limits::INT32_MAX, 0, false));
 	}
 
 	public function getLevel():World{
