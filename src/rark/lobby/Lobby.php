@@ -73,7 +73,7 @@ class Lobby{
 
 	public function join(Player $player):void{
 		$spawn = $this->getSpawn();
-		$pos = new Position($spawn->x, $spawn->y, $spawn->z, $this->lobby->getLevel());
+		$pos = new Position($spawn->x, $spawn->y, $spawn->z, $this->getLevel());
 		$player->teleport($pos);
 		$player->setSpawn($pos);
 		$player->setGamemode(GameMode::ADVENTURE());
