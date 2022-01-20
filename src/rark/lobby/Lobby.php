@@ -74,9 +74,11 @@ class Lobby{
 	public function join(Player $player):void{
 		$spawn = $this->getSpawn();
 		$pos = new Position($spawn->x, $spawn->y, $spawn->z, $this->getLevel());
+		$player->getInventory()->setContents([]);
 		$player->teleport($pos);
 		$player->setSpawn($pos);
 		$player->setGamemode(GameMode::ADVENTURE());
+		$player->getEffects()->clear();
 		$player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), Limits::INT32_MAX, 0, false));
 	}
 
